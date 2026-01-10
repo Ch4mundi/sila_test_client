@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Version>10.0.0</Version>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.33.2" />
+    <PackageReference Include="Grpc.Tools" Version="2.76.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="SiLA2.Core" Version="10.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\" />
+    <Folder Include="Protos\" />
+  </ItemGroup>
+
+  <Target Name="DownloadContentFiles" BeforeTargets="ProtoPreparation">
+    <DownloadFile SourceUrl="https://gitlab.com/SiLA2/sila_base/-/raw/master/xslt/fdl2proto.xsl" DestinationFolder="$(MSBuildProjectDirectory)/Features" DestinationFileName="fdl2proto.xsl"></DownloadFile>
+    <DownloadFile SourceUrl="https://gitlab.com/SiLA2/sila_base/-/raw/master/xslt/fdl2proto-messages.xsl" DestinationFolder="$(MSBuildProjectDirectory)/Features" DestinationFileName="fdl2proto-messages.xsl"></DownloadFile>
+    <DownloadFile SourceUrl="https://gitlab.com/SiLA2/sila_base/-/raw/master/xslt/fdl2proto-service.xsl" DestinationFolder="$(MSBuildProjectDirectory)/Features" DestinationFileName="fdl2proto-service.xsl"></DownloadFile>
+    <DownloadFile SourceUrl="https://gitlab.com/SiLA2/sila_base/-/raw/master/xslt/fdl-validation.xsl" DestinationFolder="$(MSBuildProjectDirectory)/Features" DestinationFileName="fdl-validation.xsl"></DownloadFile>
+    <DownloadFile SourceUrl="https://gitlab.com/SiLA2/sila_base/-/raw/master/protobuf/SiLAFramework.proto" DestinationFolder="$(MSBuildProjectDirectory)/Protos" DestinationFileName="SiLAFramework.proto"></DownloadFile>
+  </Target>
+
+  <Target Name="ProtoPreparation" BeforeTargets="PrepareForBuild">
+    <Message Text="Copying Base Protos..." Importance="high"></Message>
+    <Copy SourceFiles="@(SilaProtoDefaultFiles)" DestinationFolder="Protos\" />
+
+    <Message Text="Started XmlTransformation GreetingProvider-v1_0.sila.xml -&gt; GreetingProvider.proto" Importance="high"></Message>
+    <XslTransformation XslInputPath="$(MSBuildProjectDirectory)/Features/fdl2proto.xsl" XmlInputPaths="$(MSBuildProjectDirectory)/Features/GreetingProvider-v1_0.sila.xml" OutputPaths="Protos\GreetingProvider.proto" />
+    <Message Text="Finished XmlTransformation GreetingProvider-v1_0.sila.xml -&gt; GreetingProvider.proto" Importance="high"></Message>
+  </Target>
+
+  <Target Name="ProtoGeneration" DependsOnTargets="ProtoPreparation" AfterTargets="ProtoPreparation">
+    <Message Text="Compiling Protos..." Importance="high"></Message>
+    <ItemGroup>
+      <Protobuf Include="Protos\GreetingProvider.proto" ProtoRoot="Protos\" GrpcServices="Both" OutputDir="Services\" />
+      <Protobuf Update="Protos\SiLAFramework.proto" ProtoRoot="Protos\" CompileOutputs="false" />
+    </ItemGroup>
+    <Message Text="Finished Compiling Protos..." Importance="high"></Message>
+  </Target>
+
+</Project>
