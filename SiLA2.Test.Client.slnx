@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Auth.Client.App/Auth.Client.App.csproj" />
+  <Project Path="Auth.Features/Auth.Features.csproj" />
+</Solution>

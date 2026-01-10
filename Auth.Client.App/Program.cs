@@ -65,19 +65,19 @@ internal class Program
         var silaServiceDescriptionResponse = await siLaServiceClient.Get_ServerDescriptionAsync(new());
         logger.LogInformation($"SiLA2 Server Description: {silaServiceDescriptionResponse.ServerDescription.Value}");
         
-        var greeterClient = new GreetingProvider.GreetingProviderClient(channel);
+        //var greeterClient = new GreetingProvider.GreetingProviderClient(channel);
 
-        var getStartYearResponse = await greeterClient.Get_StartYearAsync(new ());
+        //var getStartYearResponse = await greeterClient.Get_StartYearAsync(new ());
         
-        logger.LogInformation($"This is year {getStartYearResponse.StartYear.Value}");
+        //logger.LogInformation($"This is year {getStartYearResponse.StartYear.Value}");
         
-        Console.WriteLine("Please enter name: ");
-        string name = Console.ReadLine();
-        name = string.IsNullOrEmpty(name) ? "Dave Lombardo" : name;
+        //Console.WriteLine("Please enter name: ");
+        //string name = Console.ReadLine();
+        //name = string.IsNullOrEmpty(name) ? "Dave Lombardo" : name;
         
-        var sayHelloResponse = await greeterClient.SayHelloAsync(new SayHello_Parameters { Name = new SiLA2Framework.String { Value = name }});
+        //var sayHelloResponse = await greeterClient.SayHelloAsync(new SayHello_Parameters { Name = new SiLA2Framework.String { Value = name }});
 
-        logger.LogInformation($"Response from Server : {sayHelloResponse.Greeting.Value}");
+        //logger.LogInformation($"Response from Server : {sayHelloResponse.Greeting.Value}");
         
         // var authenticationClient = new AuthenticationService.AuthenticationServiceClient(channel);
         // var loginRequest = new Login_Parameters
