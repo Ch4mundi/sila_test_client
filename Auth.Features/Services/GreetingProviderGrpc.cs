@@ -76,24 +76,6 @@ namespace Sila2.Org.Silastandard.Examples.Greetingprovider.V1 {
       get { return global::Sila2.Org.Silastandard.Examples.Greetingprovider.V1.GreetingProviderReflection.Descriptor.Services[0]; }
     }
 
-    /// <summary>Base class for server-side implementations of GreetingProvider</summary>
-    [grpc::BindServiceMethod(typeof(GreetingProvider), "BindService")]
-    public abstract partial class GreetingProviderBase
-    {
-      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual global::System.Threading.Tasks.Task<global::Sila2.Org.Silastandard.Examples.Greetingprovider.V1.SayHello_Responses> SayHello(global::Sila2.Org.Silastandard.Examples.Greetingprovider.V1.SayHello_Parameters request, grpc::ServerCallContext context)
-      {
-        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
-      }
-
-      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual global::System.Threading.Tasks.Task<global::Sila2.Org.Silastandard.Examples.Greetingprovider.V1.Get_StartYear_Responses> Get_StartYear(global::Sila2.Org.Silastandard.Examples.Greetingprovider.V1.Get_StartYear_Parameters request, grpc::ServerCallContext context)
-      {
-        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
-      }
-
-    }
-
     /// <summary>Client for GreetingProvider</summary>
     public partial class GreetingProviderClient : grpc::ClientBase<GreetingProviderClient>
     {
@@ -167,27 +149,6 @@ namespace Sila2.Org.Silastandard.Examples.Greetingprovider.V1 {
       {
         return new GreetingProviderClient(configuration);
       }
-    }
-
-    /// <summary>Creates service definition that can be registered with a server</summary>
-    /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
-    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-    public static grpc::ServerServiceDefinition BindService(GreetingProviderBase serviceImpl)
-    {
-      return grpc::ServerServiceDefinition.CreateBuilder()
-          .AddMethod(__Method_SayHello, serviceImpl.SayHello)
-          .AddMethod(__Method_Get_StartYear, serviceImpl.Get_StartYear).Build();
-    }
-
-    /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the service binding logic.
-    /// Note: this method is part of an experimental API that can change or be removed without any prior notice.</summary>
-    /// <param name="serviceBinder">Service methods will be bound by calling <c>AddMethod</c> on this object.</param>
-    /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
-    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-    public static void BindService(grpc::ServiceBinderBase serviceBinder, GreetingProviderBase serviceImpl)
-    {
-      serviceBinder.AddMethod(__Method_SayHello, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Sila2.Org.Silastandard.Examples.Greetingprovider.V1.SayHello_Parameters, global::Sila2.Org.Silastandard.Examples.Greetingprovider.V1.SayHello_Responses>(serviceImpl.SayHello));
-      serviceBinder.AddMethod(__Method_Get_StartYear, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Sila2.Org.Silastandard.Examples.Greetingprovider.V1.Get_StartYear_Parameters, global::Sila2.Org.Silastandard.Examples.Greetingprovider.V1.Get_StartYear_Responses>(serviceImpl.Get_StartYear));
     }
 
   }

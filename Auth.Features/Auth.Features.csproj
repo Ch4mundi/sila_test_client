@@ -41,7 +41,7 @@
   <Target Name="ProtoGeneration" DependsOnTargets="ProtoPreparation" AfterTargets="ProtoPreparation">
     <Message Text="Compiling Protos..." Importance="high"></Message>
     <ItemGroup>
-      <Protobuf Include="Protos\GreetingProvider.proto" ProtoRoot="Protos\" GrpcServices="Both" OutputDir="Services\" />
+      <Protobuf Include="Protos\GreetingProvider.proto" ProtoRoot="Protos\" GrpcServices="Client" OutputDir="Services\" />
       <Protobuf Update="Protos\SiLAFramework.proto" ProtoRoot="Protos\" CompileOutputs="false" />
     </ItemGroup>
     <Message Text="Finished Compiling Protos..." Importance="high"></Message>
