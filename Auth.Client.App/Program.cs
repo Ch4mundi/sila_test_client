@@ -16,20 +16,26 @@ internal class Program
 {
     private static IConfigurationRoot _configuration;
 
+    // Entry point for the application. Using an async Main allows awaiting asynchronous operations without blocking.
     static async Task Main(string[] args)
     {
+        // Build configuration from appsettings.json and environment variables.
         var configBuilder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .AddEnvironmentVariables();
         _configuration = configBuilder.Build();
 
+        // Configure dependency injection and services.
         var clientSetup = new Configurator(_configuration, args);
 
         Log.Logger = new LoggerConfiguration()
             .ReadFrom.Configuration(_configuration)
+            .Enrich.FromLogContext()
             .CreateLogger();
 
-        clientSetup.Container.AddLogging(x => {
+        clientSetup.Container.AddLogging(x =>
+        {
             x.ClearProviders();
             x.AddSerilog(dispose: true);
         });
@@ -39,31 +45,40 @@ internal class Program
 
         logger.LogInformation("Starting Server Discovery...");
 
+        // Discover available SiLA2 servers.
         var serverMap = await clientSetup.SearchForServers();
 
         GrpcChannel channel;
-        var serverType = "SiLA2AuthenticationServer";
+        const string serverType = "SiLA2AuthenticationServer";
         var server = serverMap.Values.FirstOrDefault(x => x.ServerType == serverType);
+
         if (server != null)
         {
             logger.LogInformation("Found Server");
             logger.LogInformation(server.ServerInfo);
             logger.LogInformation($"Connecting to {server}");
-            channel = await clientSetup.GetChannel(server.Address, server.Port, acceptAnyServerCertificate: false, server.SilaCA.GetCaFromFormattedCa());
+            channel = await clientSetup.GetChannel(
+                server.Address,
+                server.Port,
+                acceptAnyServerCertificate: false,
+                server.SilaCA.GetCaFromFormattedCa());
         }
         else
         {
             var clientConfig = clientSetup.ServiceProvider.GetService<IClientConfig>();
-            logger.LogInformation($"No connection automatically discovered. Using Server-URI '{clientConfig.IpOrCdirOrFullyQualifiedHostName}:{clientConfig.Port}' from ClientConfig");
+            logger.LogInformation(
+                $"No connection automatically discovered. Using Server-URI '{clientConfig.IpOrCdirOrFullyQualifiedHostName}:{clientConfig.Port}' from ClientConfig");
             channel = await clientSetup.GetChannel(acceptAnyServerCertificate: true);
         }
 
         var siLaServiceClient = new SiLAService.SiLAServiceClient(channel);
         var silaServiceNameResponse = await siLaServiceClient.Get_ServerNameAsync(new());
-        logger.LogInformation($"Connected to SiLA2 Server '{silaServiceNameResponse.ServerName.Value}'");
-        
+        logger.LogInformation(
+            $"Connected to SiLA2 Server '{silaServiceNameResponse.ServerName.Value}'");
+
         var silaServiceDescriptionResponse = await siLaServiceClient.Get_ServerDescriptionAsync(new());
-        logger.LogInformation($"SiLA2 Server Description: {silaServiceDescriptionResponse.ServerDescription.Value}");
+        logger.LogInformation(
+            $"SiLA2 Server Description: {silaServiceDescriptionResponse.ServerDescription.Value}");
         
         //var greeterClient = new GreetingProvider.GreetingProviderClient(channel);
 
@@ -145,9 +160,9 @@ internal class Program
         //     logger.LogError(ErrorHandling.HandleException(ex));
         // }
 
+        // Wait for user input before exiting.
         Console.WriteLine();
         Console.WriteLine("Press any key to exit...");
-
         Console.ReadKey();
     }
 }
